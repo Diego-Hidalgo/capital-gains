@@ -1,5 +1,6 @@
 
 import json
+
 class Operation :
 
     def __init__(self, a, p, q):
