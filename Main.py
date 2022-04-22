@@ -34,7 +34,7 @@ class Auxiliar :
     def taxes_to_pay(self, action, price, quantity):
         if(action == "buy"):
             return 0
-
+            
         if (price < self.avg_price):
             self.total -= (self.avg_price - price) * quantity
             return 0
@@ -77,10 +77,10 @@ for op in operations:
         aux.prices.append(op.price)
         aux.quantities.append(op.quantity)
         aux.count += 1
+        aux.calc_avg_price()
         taxes.append(0)
         continue
 
-    aux.calc_avg_price()   
     taxes.append(aux.taxes_to_pay(op.action, op.price, op.quantity))
 
 for tax in taxes :
