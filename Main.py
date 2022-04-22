@@ -1,4 +1,5 @@
 
+import json
 class Operation :
 
     def __init__(self, a, p, q):
@@ -32,7 +33,7 @@ class Auxiliar :
         self.avg_price = float((num / den))
 
     def taxes_to_pay(self, action, price, quantity):
-        if(action == "buy"):
+        if (action == "buy"):
             return 0
             
         if (price < self.avg_price):
@@ -41,10 +42,10 @@ class Auxiliar :
         else:
             self.total += (price - self.avg_price) * quantity
 
-        if (price * quantity <= self.MAX_TOTAL_AMOUNT) :
+        if (price * quantity <= self.MAX_TOTAL_AMOUNT):
             return 0
 
-        if(self.total > 0):
+        if (self.total > 0):
             tax = self.TAX_RATE * self.total
             self.total = 0
             return tax
@@ -56,24 +57,45 @@ print("Hello World!")
 operations = []                 #list of the registered operations
 taxes = []                      #list of the taxes to pay
 
-while(True):
-
+#read from the json file on the given path
+@staticmethod
+def read_from_json():
+    case_path = input("\npath: ")
     print()
+    with open(case_path) as file:
+        data = json.load(file)
+        for d in data:
+            print(d)
+            a = (d['operation'])
+            p = (d['unit-cost'])
+            q = (d['quantity'])
+            operations.append(Operation(a, p, q))
 
-    action = input("operation (buy/sell): ")
-    price = int(input("unit-cost: $"))
-    quantity = int(input("quantity: "))
-    
-    operations.append(Operation(action, price, quantity))
+#read the entries from the stdin
+@staticmethod
+def read_from_console():
 
-    if(input("\ncontinue? (y/n): ") != "y"):
-        break
+    print("\nEntry format:")
+    print("operation unit-cost quantity")
+    print("to stop type -1\n")
+
+    case = input()
+
+    while(case != "-1"):
+        parts = case.split(" ")
+        operations.append(Operation(parts[0], float(parts[1]), float(parts[2])))
+        case = input()
+
+if (input("\nchoose entry method\n1-json \n2-console\n:") == "1"):
+    read_from_json()
+else:
+    read_from_console()
 
 aux = Auxiliar()
 
 for op in operations:
 
-    if op.action == "buy":
+    if (op.action == "buy"):
         aux.prices.append(op.price)
         aux.quantities.append(op.quantity)
         aux.count += 1
@@ -82,6 +104,8 @@ for op in operations:
         continue
 
     taxes.append(aux.taxes_to_pay(op.action, op.price, op.quantity))
+
+print()
 
 for tax in taxes :
     print(f'tax: {tax}')
